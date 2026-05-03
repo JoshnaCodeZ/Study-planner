@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+  <title> Study Planner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 95%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #4CAF50;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+
+    li {
+      background: #f1f1f1;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>📚 Study Planner</h1>
+
+    <input id="subject" placeholder="Enter subject">
+    <input id="hours" placeholder="Enter hours">
+
+    <button onclick="addPlan()">➕ Add Plan</button>
+    <button onclick="getPlans()">📋 Show Plans</button>
+
+    <ul id="list"></ul>
+  </div>
+
+  <script>
+    async function addPlan() {
+      const subject = document.getElementById("subject").value;
+      const hours = document.getElementById("hours").value;
+
+      await fetch(`http://127.0.0.1:8000/add?subject=${subject}&hours=${hours}`, {
+        method: "POST"
+      });
+
+      alert("Plan added!");
+    }
+
+    async function getPlans() {
+      const res = await fetch("http://127.0.0.1:8000/plans");
+      const data = await res.json();
+
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      data.forEach(plan => {
+        const li = document.createElement("li");
+        li.innerText = `📘 ${plan.subject} - ${plan.hours} hrs`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>
