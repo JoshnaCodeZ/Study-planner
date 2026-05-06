@@ -43,3 +43,16 @@ def get_plans():
     plans = db.query(StudyPlan).all()
     
     return plans
+
+@app.delete("/delete/{id}")
+def delete_plan(id: int):
+    db: Session = SessionLocal()
+
+    plan = db.query(StudyPlan).filter(StudyPlan.id == id).first()
+
+    if plan:
+        db.delete(plan)
+        db.commit()
+        return {"message": "Deleted successfully"}
+
+    return {"message": "Plan not found"}    

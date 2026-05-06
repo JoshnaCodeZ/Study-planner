@@ -81,31 +81,43 @@
   </div>
 
   <script>
-    async function addPlan() {
-      const subject = document.getElementById("subject").value;
-      const hours = document.getElementById("hours").value;
+async function addPlan() {
+  const subject = document.getElementById("subject").value;
+  const hours = document.getElementById("hours").value;
 
-      await fetch(`http://127.0.0.1:8000/add?subject=${subject}&hours=${hours}`, {
-        method: "POST"
-      });
+  await fetch(`http://127.0.0.1:8000/add?subject=${subject}&hours=${hours}`, {
+    method: "POST"
+  });
 
-      alert("Plan added!");
-    }
+  alert("Plan added!");
+  getPlans();  
+}
 
-    async function getPlans() {
-      const res = await fetch("http://127.0.0.1:8000/plans");
-      const data = await res.json();
+async function getPlans() {
+  const res = await fetch("http://127.0.0.1:8000/plans");
+  const data = await res.json();
 
-      const list = document.getElementById("list");
-      list.innerHTML = "";
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
-      data.forEach(plan => {
-        const li = document.createElement("li");
-        li.innerText = `📘 ${plan.subject} - ${plan.hours} hrs`;
-        list.appendChild(li);
-      });
-    }
-  </script>
+  data.forEach(plan => {
+    const li = document.createElement("li");
 
-</body>
-</html>
+    li.innerHTML = `
+      📘 ${plan.subject} - ${plan.hours} hrs
+      <button onclick="deletePlan(${plan.id})">❌</button>
+    `;
+
+    list.appendChild(li);
+  });
+}
+
+async function deletePlan(id) {
+  await fetch(`http://127.0.0.1:8000/delete/${id}`, {
+    method: "DELETE"
+  });
+
+  alert("Deleted!");
+  getPlans();
+}
+</script>
